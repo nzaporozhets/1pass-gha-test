@@ -1,0 +1,31 @@
+name: Test 1Password load-secrets-action
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-1password:
+    runs-on: ubuntu-latest
+    environment: gha-test
+    steps:
+      - name: Load secret from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          TEST_SECRET: op://gha-test/gha-test/credential
+
+      - name: Verify secret was loaded (value is not printed)
+        run: |
+          if [ -z "${TEST_SECRET}" ]; then
+            echo "::error::TEST_SECRET is empty"
+            exit 1
+          fi
+          echo "TEST_SECRET loaded (length: ${#TEST_SECRET})"
+
+      - name: Verify masking (should print ***)
+        run: echo "TEST_SECRET value: ${TEST_SECRET}"
