@@ -28,4 +28,5 @@ jobs:
           echo "TEST_SECRET loaded (length: ${#TEST_SECRET})"
 
       - name: Verify masking (should print ***)
-        run: echo "TEST_SECRET value: ${TEST_SECRET}"
+        run: |
+          echo "TEST_SECRET value: ${TEST_SECRET}"
